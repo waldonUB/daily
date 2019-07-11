@@ -50,13 +50,14 @@
 export default {
   name: 'Home',
   data () {
-   return {
-
-   }
+    return {
+    }
   },
   mounted () {
-      console.log(`这是组件首页`)
+    debugger
+    console.log(`这是组件首页`)
   }
+
 }
 </script>
 
@@ -68,6 +69,7 @@ export default {
     vertical-align: .65rem;
     fill: currentColor;
     overflow: hidden;
+    background-color: #fff;
 }
 .setting-icon {
     width: 2rem;
