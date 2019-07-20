@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>根据keep-alive的key值销毁测试</title>
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <style>
+    .wrapper {
+      display: flex;
+      justify-content: flex-start;
+    }
+    .container {
+      width: 300px;
+      height: 100px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 100px;
+    }
+    .result {
+      width: 300px;
+      height: 100px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 100px;
+      margin-left: 15px;
+    }
+    span {
+      color: white;
+      background-color: rgba(234, 176, 85, 0.8);
+      padding: 0 5px;
+    }
+    button {
+      color: white;
+      border-radius: 4px;
+      background-color: rgb(100, 180, 72);
+      padding: 5px 10px;
+      margin-right: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <div class="wrapper">
+      <keep-alive>
+        <component
+          :is="currentTemp"
+          :key="currentKey"
+          :current="currentKey">
+        </component>
+      </keep-alive>
+      <div class="result">
+
+      </div>
+    </div>
+    <p>将组件切换为：</p>
+    <div class="btn-group">
+      <button @click="changeTemp('temp1', 'a')">temp1</button>
+      <button @click="changeTemp('temp1', 'b')">temp1</button>
+      <button @click="changeTemp('temp2', 'c')">temp2</button>
+      <button @click="changeTemp('temp3', 'd')">temp3</button>
+    </div>
+  </div>
+<script>
+  const temp1 = {
+    template: `
+    <section class="container">
+      CurrentTemp is
+      <span>{{temp}}</span>
+      , key is
+      <span>{{current}}</span>
+    </section>`,
+    props: ['current'],
+    data () {
+      return {
+        temp: 'temp1'
+      }
+    },
+    activated () {
+    }
+  }
+  const temp2 = {
+    template: `
+    <section class="container">
+      CurrentTemp is
+      <span>{{temp}}</span>
+      , key is
+      <span>{{current}}</span>
+    </section>`,
+    props: ['current'],
+    data () {
+      return {
+        temp: 'temp2'
+      }
+    },
+    activated () {
+    }
+  }
+  const temp3 = {
+    template: `
+    <section class="container">
+      CurrentTemp is
+      <span>{{temp}}</span>
+      , key is
+      <span>{{current}}</span>
+    </section>`,
+    props: ['current'],
+    data () {
+      return {
+        temp: 'temp3'
+      }
+    },
+    activated () {
+    }
+  }
+  new Vue({
+    components: {temp1, temp2, temp3},
+    data: {
+      currentTemp: 'temp1',
+      currentKey: 'a',
+      keys: ['a'],
+      max: 5
+    },
+    methods: {
+      changeTemp (temp, key) {
+        this.currentTemp = temp
+        this.currentKey = key
+      }
+    },
+    activated () {
+
+    }
+
+  }).$mount("#app")
+</script>
+</body>
+</html>
