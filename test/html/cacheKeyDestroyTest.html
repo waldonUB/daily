@@ -18,14 +18,6 @@
       text-align: center;
       line-height: 100px;
     }
-    .result {
-      width: 300px;
-      height: 100px;
-      border: 1px solid black;
-      text-align: center;
-      line-height: 100px;
-      margin-left: 15px;
-    }
     span {
       color: white;
       background-color: rgba(234, 176, 85, 0.8);
@@ -48,12 +40,10 @@
         <component
           :is="currentTemp"
           :key="currentKey"
-          :current="currentKey">
+          :current="currentKey"
+          :key-max="max">
         </component>
       </keep-alive>
-      <div class="result">
-
-      </div>
     </div>
     <p>将组件切换为：</p>
     <div class="btn-group">
@@ -72,13 +62,17 @@
       , key is
       <span>{{current}}</span>
     </section>`,
-    props: ['current'],
+    props: ['current', 'keyMax'],
     data () {
       return {
         temp: 'temp1'
       }
     },
     activated () {
+      this.$destroyKey()
+    },
+    destroyed () {
+      console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
     }
   }
   const temp2 = {
@@ -89,13 +83,17 @@
       , key is
       <span>{{current}}</span>
     </section>`,
-    props: ['current'],
+    props: ['current', 'keyMax'],
     data () {
       return {
         temp: 'temp2'
       }
     },
     activated () {
+      this.$destroyKey()
+    },
+    destroyed () {
+      console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
     }
   }
   const temp3 = {
@@ -106,31 +104,47 @@
       , key is
       <span>{{current}}</span>
     </section>`,
-    props: ['current'],
+    props: ['current', 'keyMax'],
     data () {
       return {
         temp: 'temp3'
       }
     },
     activated () {
+      this.$destroyKey()
+    },
+    destroyed () {
+      console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
+    }
+  }
+  Vue.prototype.$destroyKey = function () {
+    let cache = this.$vnode.parent.componentInstance.cache
+    let keys = this.$vnode.parent.componentInstance.keys
+    // 忽略掉组件为null的key值
+    let cacheLen = 0
+    for (let item in cache) {
+      if (cache[item]) {
+        cacheLen++
+      }
+    }
+    if (cacheLen > this.keyMax) {
+      let outKey = keys.shift()
+      cache[outKey].componentInstance.$destroy()
+      cache[outKey] = null
     }
   }
   new Vue({
     components: {temp1, temp2, temp3},
     data: {
-      currentTemp: 'temp1',
-      currentKey: 'a',
-      keys: ['a'],
-      max: 5
+      currentTemp: 'temp1', // 当前组件
+      currentKey: 'a', // 当前key，同一个组件可能存在不同的key
+      max: 3
     },
     methods: {
       changeTemp (temp, key) {
         this.currentTemp = temp
         this.currentKey = key
       }
-    },
-    activated () {
-
     }
 
   }).$mount("#app")
