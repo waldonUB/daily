@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>根据keep-alive的key值销毁测试</title>
-  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <title>测试max大于同名的key</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
   <style>
 .wrapper {
   display: flex;
@@ -36,12 +36,11 @@ button {
 <body>
 <div id="app">
   <div class="wrapper">
-    <keep-alive>
+    <keep-alive :max="max">
       <component
         :is="currentTemp"
         :key="currentKey"
-        :current="currentKey"
-        :key-max="max">
+        :current="currentKey">
       </component>
     </keep-alive>
   </div>
@@ -62,14 +61,11 @@ const temp1 = {
     , key is
     <span>{{current}}</span>
   </section>`,
-  props: ['current', 'keyMax'],
+  props: ['current'],
   data () {
     return {
       temp: 'temp1'
     }
-  },
-  activated () {
-    this.$destroyKey()
   },
   destroyed () {
     console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
@@ -83,14 +79,11 @@ const temp2 = {
     , key is
     <span>{{current}}</span>
   </section>`,
-  props: ['current', 'keyMax'],
+  props: ['current'],
   data () {
     return {
       temp: 'temp2'
     }
-  },
-  activated () {
-    this.$destroyKey()
   },
   destroyed () {
     console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
@@ -104,34 +97,14 @@ const temp3 = {
     , key is
     <span>{{current}}</span>
   </section>`,
-  props: ['current', 'keyMax'],
+  props: ['current'],
   data () {
     return {
       temp: 'temp3'
     }
   },
-  activated () {
-    this.$destroyKey()
-  },
   destroyed () {
     console.log(`key值为：${this.current}的组件：${this.temp}被销毁了`)
-  }
-}
-Vue.prototype.$destroyKey = function () {
-  let cache = this.$vnode.parent.componentInstance.cache
-  let keys = this.$vnode.parent.componentInstance.keys
-  // 忽略掉组件为null的key值
-  let cacheLen = 0
-  for (let item in cache) {
-    // cache对象原型没有东西，无需调用hasOwnProperty
-    if (cache[item]) {
-      cacheLen++
-    }
-  }
-  if (cacheLen > this.keyMax) {
-    let outKey = keys.shift()
-    cache[outKey].componentInstance.$destroy()
-    cache[outKey] = null
   }
 }
 new Vue({
@@ -139,6 +112,9 @@ new Vue({
   data: {
     currentTemp: 'temp1', // 当前组件
     currentKey: 'a', // 当前key，同一个组件可能存在不同的key
+    // 这里的max数值要大于同名不同key的组件数量。例如
+    // temp1组件，在component内有a，b，c三个不同key的组件
+    // max为3时，就会出现部分组件不会销毁的bug
     max: 2
   },
   methods: {
