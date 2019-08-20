@@ -10,10 +10,12 @@
       <input type="text" v-model="state2Vuex">
       {{$store.state.persist4Vuex}}
     </p>
+    {{persist4Vuex}}
   </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: 'PersistentTest',
   data () {
@@ -27,8 +29,14 @@ export default {
       this.$store.commit('persistentTest', newVal)
     },
     state2Vuex (newVal) {
+      console.log(`state2Vuex的val：` + newVal)
       this.$store.commit('persist4Vuex', newVal)
     }
+  },
+  computed: {
+    ...mapState({
+      persist4Vuex: state => state.persist4Vuex + '-Local'
+    })
   }
 }
 </script>
