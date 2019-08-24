@@ -1,4 +1,3 @@
-const global  total = 5
 let count = 3
 let obj = {
   a: 1

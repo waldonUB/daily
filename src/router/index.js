@@ -4,6 +4,7 @@ import Home from '../pages/Home'
 import PersistentTest from '@test/vuexPersistentTest/PersistentTest'
 import ES6Test from '@test/amdCmd/ES6/ES6Test'
 import ES6Test2 from '@test/amdCmd/ES6/ES6Test2'
+import ES6Test3 from '@test/amdCmd/ES6/ES6Test3'
 
 Vue.use(Router)
 export default new Router({
@@ -28,5 +29,10 @@ export default new Router({
       name: 'ES6Test2',
       component: ES6Test2
     },
+    {
+      path: '/ES6Test3',
+      name: 'ES6Test3',
+      component: ES6Test3
+    }
   ]
 })
