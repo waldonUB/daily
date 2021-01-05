@@ -18,7 +18,7 @@
   },
   "homepage": "https://github.com/waldonUB/daily#readme",
   "devDependencies": {
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-eslint": "^8.2.1",
     "clean-webpack-plugin": "^2.0.2",
     "copy-webpack-plugin": "^5.0.3",
